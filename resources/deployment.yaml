@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-crm-deployment
+  labels:
+    app: demo-crm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-crm
+  template:
+    metadata:
+      labels:
+        app: demo-crm
+    spec:
+      containers:
+      - name: demo-crm
+        image: pwstaging/demo-crm:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: MONGODB_URI
+          value: "mongodb://$(MONGO_INITDB_ROOT_USERNAME):$(MONGO_INITDB_ROOT_PASSWORD)@mongo-mongodb-headless.default.svc.cluster.local:27017/$(MONGO_DATABASE)"
+        envFrom:
+          - configMapRef:
+              name: mongodb-config
+          - secretRef:
+              name: mongo-secret

@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demo-crm-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    acme.cert-manager.io/http01-edit-in-place: "true"
+spec:  
+  tls:
+    - hosts:
+      - bcrm.ddns.net
+      secretName: bel-crm-account-key-z4cmq
+  rules:
+  - host: bcrm.ddns.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix      
+        backend:
+          service:
+            name: demo-crm-service
+            port:
+              number: 80
+
